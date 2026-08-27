@@ -20,7 +20,7 @@ public class App {
         do {
             limpiarPantalla();
             System.out.println("═".repeat(40));
-            System.out.println("Sistema de Gestion de Tickets - Help Desk");
+            System.out.println("Sistema de Gestion de Tickets");
             System.out.println("1. Crear ticket");
             System.out.println("2. Gestionar tickets urgentes");
             System.out.println("3. Gestionar tickets normales");
@@ -81,7 +81,6 @@ public class App {
         System.out.println("Ticket creado: " + t);
     }
 
-    // ---------------- PILA (tickets urgentes) ----------------
     static void menuPila(Scanner teclado, Deque<Ticket> pila) {
         int opcion;
         do {
@@ -133,7 +132,6 @@ public class App {
         } while (opcion != 4);
     }
 
-    // ---------------- COLA (tickets normales, FIFO) ----------------
     static void menuCola(Scanner teclado, Deque<Ticket> cola) {
         int opcion;
         do {
@@ -185,7 +183,6 @@ public class App {
         } while (opcion != 4);
     }
 
-    // ---------------- LISTA (catalogo general de tickets) ----------------
     static void menuLista(Scanner teclado, List<Ticket> lista) {
         int opcion;
         do {
@@ -270,7 +267,6 @@ public class App {
         }
     }
 
-    // ---------------- VER TODOS (urgencia y departamento) ----------------
     static void verTodos(Deque<Ticket> pila, Deque<Ticket> cola, List<Ticket> lista, Scanner teclado) {
         limpiarPantalla();
         System.out.println("═".repeat(40));
@@ -303,7 +299,6 @@ public class App {
         pausar(teclado);
     }
 
-    // ---------------- Utilidades ----------------
     static int leerEntero(Scanner teclado) {
         while (true) {
             String linea = teclado.nextLine().trim();
