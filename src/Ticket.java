@@ -2,15 +2,19 @@ public class Ticket {
     int id;
     String descripcion;
     String departamento;
+    String prioridad; // "Urgente" o "Normal"
+    String estado;    // "Pendiente" o "Atendido"
 
-    Ticket(int id, String descripcion, String departamento) {
+    Ticket(int id, String descripcion, String departamento, String prioridad) {
         this.id = id;
         this.descripcion = descripcion;
         this.departamento = departamento;
+        this.prioridad = prioridad;
+        this.estado = "Pendiente";
     }
 
     @Override
     public String toString() {
-        return "Ticket #" + id + " | Depto: " + departamento + " | " + descripcion;
+        return "Ticket #" + id + " | " + departamento + " | " + prioridad + " | " + estado + " | " + descripcion;
     }
 }
