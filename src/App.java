@@ -12,15 +12,23 @@ public class App {
     public static void main(String[] args) {
         Scanner teclado = new Scanner(System.in);
 
-        Deque<Ticket> pila = new ArrayDeque<>();
-        Deque<Ticket> cola = new ArrayDeque<>();
-        List<Ticket> lista = new ArrayList<>();
+        Deque<Ticket> pila = new ArrayDeque<>(); // Urgentes: LIFO (pila)
+        Deque<Ticket> cola = new ArrayDeque<>();  // Normales: FIFO (cola)
+        List<Ticket> lista = new ArrayList<>();   // Registro completo de tickets
 
         int opcion;
         do {
             limpiarPantalla();
+            System.out.println("\u001B[34m" + """
+                                                                                                         
+ ▄▄▄▄▄▄▄                                         ▄▄         ▄▄▄▄▄▄▄▄▄                                    
+███▀▀▀▀▀               ██   ▀▀                   ██         ▀▀▀███▀▀▀ ▀▀        ▄▄            ██         
+███       ▄█▀█▄ ▄█▀▀▀ ▀██▀▀ ██  ▄███▄ ████▄   ▄████ ▄█▀█▄      ███    ██  ▄████ ██ ▄█▀ ▄█▀█▄ ▀██▀▀ ▄█▀▀▀ 
+███  ███▀ ██▄█▀ ▀███▄  ██   ██  ██ ██ ██ ██   ██ ██ ██▄█▀      ███    ██  ██    ████   ██▄█▀  ██   ▀███▄ 
+▀██████▀  ▀█▄▄▄ ▄▄▄█▀  ██   ██▄ ▀███▀ ██ ██   ▀████ ▀█▄▄▄      ███    ██▄ ▀████ ██ ▀█▄ ▀█▄▄▄  ██   ▄▄▄█▀ 
+                                                                                                                                                                                                             
+""" + "\u001B[0m");
             System.out.println("═".repeat(40));
-            System.out.println("Sistema de Gestion de Tickets");
             System.out.println("1. Crear ticket");
             System.out.println("2. Gestionar tickets urgentes");
             System.out.println("3. Gestionar tickets normales");
@@ -46,7 +54,7 @@ public class App {
                     menuLista(teclado, lista);
                     break;
                 case 5:
-                    verTodos(pila, cola, teclado);
+                    verPendientes(pila, cola, teclado);
                     break;
                 case 6:
                     System.out.println("Saliendo.");
@@ -61,6 +69,7 @@ public class App {
     }
 
 
+    // Crea un ticket y lo asigna a pila o cola segun su prioridad.
     static void crearTicket(Scanner teclado, Deque<Ticket> pila, Deque<Ticket> cola, List<Ticket> lista) {
 
         System.out.print("Descripcion del ticket: ");
@@ -87,9 +96,9 @@ public class App {
         Ticket t = new Ticket(contadorId++, descripcion, departamento, prioridad);
 
         if (prioridad.equalsIgnoreCase("Urgente")) {
-            pila.push(t);
+            pila.push(t); // Entra al tope de la pila
         } else {
-            cola.offerLast(t);
+            cola.offerLast(t); // Entra al final de la cola
         }
 
         lista.add(t); // Agrega el ticket a la lista.
@@ -98,12 +107,22 @@ public class App {
 
 
 
+    // Menu de tickets urgentes (atiende el ultimo creado, LIFO).
     static void menuPila(Scanner teclado, Deque<Ticket> pila) {
         int opcion;
         do {
             limpiarPantalla();
+            System.out.println("\u001B[34m" + """
+                                                                                               
+▄▄▄▄▄▄▄▄▄                                                                                      
+▀▀▀███▀▀▀ ▀▀        ▄▄            ██                                          ██               
+   ███    ██  ▄████ ██ ▄█▀ ▄█▀█▄ ▀██▀▀ ▄█▀▀▀   ██ ██ ████▄ ▄████ ▄█▀█▄ ████▄ ▀██▀▀ ▄█▀█▄ ▄█▀▀▀ 
+   ███    ██  ██    ████   ██▄█▀  ██   ▀███▄   ██ ██ ██ ▀▀ ██ ██ ██▄█▀ ██ ██  ██   ██▄█▀ ▀███▄ 
+   ███    ██▄ ▀████ ██ ▀█▄ ▀█▄▄▄  ██   ▄▄▄█▀   ▀██▀█ ██    ▀████ ▀█▄▄▄ ██ ██  ██   ▀█▄▄▄ ▄▄▄█▀ 
+                                                              ██                               
+                                                          ▀▀▀                                
+""" + "\u001B[0m");            
             System.out.println("═".repeat(40));
-            System.out.println("Tickets Urgentes");
             System.out.println("1. Atender ultimo ticket");
             System.out.println("2. Ver ultimo ticket");
             System.out.println("3. Ver todos los tickets urgentes");
@@ -149,12 +168,21 @@ public class App {
         } while (opcion != 4);
     }
 
+    // Menu de tickets normales (atiende el mas antiguo, FIFO).
     static void menuCola(Scanner teclado, Deque<Ticket> cola) {
         int opcion;
         do {
             limpiarPantalla();
+            System.out.println("\u001B[34m" + """
+                                             
+▄▄▄▄▄▄▄▄▄                                    
+▀▀▀███▀▀▀ ▀▀        ▄▄            ██         
+   ███    ██  ▄████ ██ ▄█▀ ▄█▀█▄ ▀██▀▀ ▄█▀▀▀ 
+   ███    ██  ██    ████   ██▄█▀  ██   ▀███▄ 
+   ███    ██▄ ▀████ ██ ▀█▄ ▀█▄▄▄  ██   ▄▄▄█▀ 
+                                             
+""" + "\u001B[0m");           
             System.out.println("═".repeat(40));
-            System.out.println("Tickets Normales");
             System.out.println("1. Atender siguiente ticket");
             System.out.println("2. Ver siguiente ticket");
             System.out.println("3. Ver todos los tickets normales");
@@ -200,12 +228,22 @@ public class App {
         } while (opcion != 4);
     }
 
+    // Menu de registro: busqueda, filtrado y eliminacion de tickets.
     static void menuLista(Scanner teclado, List<Ticket> lista) {
         int opcion;
         do {
             limpiarPantalla();
+            System.out.println("\u001B[34m" + """
+                                                  
+▄▄▄▄▄▄▄                                           
+███▀▀███▄             ▀▀         ██               
+███▄▄███▀ ▄█▀█▄ ▄████ ██  ▄█▀▀▀ ▀██▀▀ ████▄ ▄███▄ 
+███▀▀██▄  ██▄█▀ ██ ██ ██  ▀███▄  ██   ██ ▀▀ ██ ██ 
+███  ▀███ ▀█▄▄▄ ▀████ ██▄ ▄▄▄█▀  ██   ██    ▀███▀ 
+                   ██                             
+                 ▀▀▀                              
+""" + "\u001B[0m");
             System.out.println("═".repeat(40));
-            System.out.println("Registro de Tickets");
             System.out.println("1. Buscar ticket por id");
             System.out.println("2. Ver tickets por departamento");
             System.out.println("3. Eliminar registro por id");
@@ -237,6 +275,7 @@ public class App {
 
                     if (encontradoEliminar != null) {
 
+                        // Solo se elimina si ya fue atendido
                         if (encontradoEliminar.estado.equalsIgnoreCase("Atendido")) {
                             lista.remove(encontradoEliminar);
                             System.out.println("Ticket eliminado: " + encontradoEliminar);
@@ -268,6 +307,7 @@ public class App {
         } while (opcion != 5);
     }
 
+    // Busqueda lineal por id.
     static Ticket buscarPorId(List<Ticket> lista, int id) {
         for (Ticket t : lista) {
             if (t.id == id) {
@@ -292,8 +332,20 @@ public class App {
         }
     }
 
-    static void verTodos(Deque<Ticket> pila, Deque<Ticket> cola, Scanner teclado) {
+    // Muestra todos los tickets pendientes (urgentes y normales).
+    static void verPendientes(Deque<Ticket> pila, Deque<Ticket> cola, Scanner teclado) {
         limpiarPantalla();
+        System.out.println("\u001B[34m" + """
+                                                              
+▄▄▄▄▄▄▄                  ▄▄                                   
+███▀▀███▄                ██ ▀▀               ██               
+███▄▄███▀ ▄█▀█▄ ████▄ ▄████ ██  ▄█▀█▄ ████▄ ▀██▀▀ ▄█▀█▄ ▄█▀▀▀ 
+███▀▀▀▀   ██▄█▀ ██ ██ ██ ██ ██  ██▄█▀ ██ ██  ██   ██▄█▀ ▀███▄ 
+███       ▀█▄▄▄ ██ ██ ▀████ ██▄ ▀█▄▄▄ ██ ██  ██   ▀█▄▄▄ ▄▄▄█▀ 
+
+                                                              
+""" + "\u001B[0m");
+
         System.out.println("═".repeat(40));
 
         System.out.println("\nUrgentes");
@@ -318,6 +370,7 @@ public class App {
         pausar(teclado);
     }
 
+    // Lee un entero validando la entrada del usuario.
     static int leerEntero(Scanner teclado) {
         while (true) {
             String linea = teclado.nextLine().trim();
