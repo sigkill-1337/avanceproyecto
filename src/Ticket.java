@@ -2,8 +2,8 @@ public class Ticket {
     int id;
     String descripcion;
     String departamento;
-    String prioridad; // "Urgente" o "Normal"
-    String estado;    // "Pendiente" o "Atendido"
+    String prioridad; 
+    String estado; 
 
     Ticket(int id, String descripcion, String departamento, String prioridad) {
         this.id = id;

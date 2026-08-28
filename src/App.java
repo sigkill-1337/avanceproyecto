@@ -6,7 +6,7 @@ import java.util.List;
 
 public class App {
 
-    public static final String prompt = "\u001B[31mhelpdesk\u001B[0m:\u001B[34m~\u001B[0m$ ";
+    public static final String prompt = "\u001B[31msoporte\u001B[0m:\u001B[34m~\u001B[0m$ ";
     static int contadorId = 1;
 
     public static void main(String[] args) {
@@ -24,7 +24,7 @@ public class App {
             System.out.println("1. Crear ticket");
             System.out.println("2. Gestionar tickets urgentes");
             System.out.println("3. Gestionar tickets normales");
-            System.out.println("4. Gestionar catalogo de tickets");
+            System.out.println("4. Registro de tickets");
             System.out.println("5. Ver todos los tickets pendientes");
             System.out.println("6. Salir");
             System.out.println("═".repeat(40));
@@ -33,7 +33,7 @@ public class App {
 
             switch (opcion) {
                 case 1:
-                    crearTicketGlobal(teclado, pila, cola, lista);
+                    crearTicket(teclado, pila, cola, lista);
                     pausar(teclado);
                     break;
                 case 2:
@@ -46,7 +46,7 @@ public class App {
                     menuLista(teclado, lista);
                     break;
                 case 5:
-                    verTodos(pila, cola, lista, teclado);
+                    verTodos(pila, cola, teclado);
                     break;
                 case 6:
                     System.out.println("Saliendo.");
@@ -60,14 +60,29 @@ public class App {
         teclado.close();
     }
 
-    // ---------------- CREACION CENTRALIZADA ----------------
-    static void crearTicketGlobal(Scanner teclado, Deque<Ticket> pila, Deque<Ticket> cola, List<Ticket> lista) {
+
+    static void crearTicket(Scanner teclado, Deque<Ticket> pila, Deque<Ticket> cola, List<Ticket> lista) {
+
         System.out.print("Descripcion del ticket: ");
         String descripcion = teclado.nextLine();
+
         System.out.print("Departamento: ");
         String departamento = teclado.nextLine();
-        System.out.print("Prioridad (Urgente/Normal): ");
-        String prioridad = teclado.nextLine();
+
+        String prioridad;
+
+        while (true) {
+            System.out.print("Prioridad (Urgente/Normal): ");
+            prioridad = teclado.nextLine();
+
+            if (prioridad.equalsIgnoreCase("Urgente")) {
+                break;
+            } else if (prioridad.equalsIgnoreCase("Normal")) {
+                break;
+            } else {
+                System.out.println("Opcion incorrecta. Escribe Urgente o Normal.");
+            }
+        }
 
         Ticket t = new Ticket(contadorId++, descripcion, departamento, prioridad);
 
@@ -76,20 +91,22 @@ public class App {
         } else {
             cola.offerLast(t);
         }
-        lista.add(t);
 
+        lista.add(t); // Agrega el ticket a la lista.
         System.out.println("Ticket creado: " + t);
     }
+
+
 
     static void menuPila(Scanner teclado, Deque<Ticket> pila) {
         int opcion;
         do {
             limpiarPantalla();
             System.out.println("═".repeat(40));
-            System.out.println("--- Tickets Urgentes (Pila) ---");
-            System.out.println("1. Atender ultimo ticket (pop)");
-            System.out.println("2. Ver ultimo ticket (peek)");
-            System.out.println("3. Ver todos los urgentes");
+            System.out.println("Tickets Urgentes");
+            System.out.println("1. Atender ultimo ticket");
+            System.out.println("2. Ver ultimo ticket");
+            System.out.println("3. Ver todos los tickets urgentes");
             System.out.println("4. Volver");
             System.out.println("═".repeat(40));
             System.out.print(prompt);
@@ -137,10 +154,10 @@ public class App {
         do {
             limpiarPantalla();
             System.out.println("═".repeat(40));
-            System.out.println("Tickets Normales (Cola)");
-            System.out.println("1. Atender siguiente ticket (dequeue)");
-            System.out.println("2. Ver siguiente ticket (front)");
-            System.out.println("3. Ver todos los normales");
+            System.out.println("Tickets Normales");
+            System.out.println("1. Atender siguiente ticket");
+            System.out.println("2. Ver siguiente ticket");
+            System.out.println("3. Ver todos los tickets normales");
             System.out.println("4. Volver");
             System.out.println("═".repeat(40));
             System.out.print(prompt);
@@ -188,10 +205,10 @@ public class App {
         do {
             limpiarPantalla();
             System.out.println("═".repeat(40));
-            System.out.println("Catalogo de Tickets (Lista)");
-            System.out.println("1. Buscar ticket por id (find)");
-            System.out.println("2. Ver tickets por departamento (find)");
-            System.out.println("3. Eliminar ticket por id (delete)");
+            System.out.println("Registro de Tickets");
+            System.out.println("1. Buscar ticket por id");
+            System.out.println("2. Ver tickets por departamento");
+            System.out.println("3. Eliminar registro por id");
             System.out.println("4. Ver todos los tickets registrados");
             System.out.println("5. Volver");
             System.out.println("═".repeat(40));
@@ -214,11 +231,19 @@ public class App {
                     break;
                 case 3:
                     System.out.print("ID del ticket a eliminar: ");
+
                     int idEliminar = leerEntero(teclado);
                     Ticket encontradoEliminar = buscarPorId(lista, idEliminar);
+
                     if (encontradoEliminar != null) {
-                        lista.remove(encontradoEliminar);
-                        System.out.println("Ticket eliminado: " + encontradoEliminar);
+
+                        if (encontradoEliminar.estado.equalsIgnoreCase("Atendido")) {
+                            lista.remove(encontradoEliminar);
+                            System.out.println("Ticket eliminado: " + encontradoEliminar);
+                        } else {
+                            System.out.println("No se puede eliminar el ticket porque todavía no está cerrado.");
+                        }
+
                     } else {
                         System.out.println("No se encontro un ticket con ese id.");
                     }
@@ -267,7 +292,7 @@ public class App {
         }
     }
 
-    static void verTodos(Deque<Ticket> pila, Deque<Ticket> cola, List<Ticket> lista, Scanner teclado) {
+    static void verTodos(Deque<Ticket> pila, Deque<Ticket> cola, Scanner teclado) {
         limpiarPantalla();
         System.out.println("═".repeat(40));
 
@@ -276,7 +301,8 @@ public class App {
             System.out.println("(sin tickets)");
         }
         for (Ticket t : pila) {
-            System.out.println(t);
+            if (t.estado.equalsIgnoreCase("Pendiente")) {
+                System.out.println(t);}
         }
 
         System.out.println("\nNormales");
@@ -284,15 +310,8 @@ public class App {
             System.out.println("(sin tickets)");
         }
         for (Ticket t : cola) {
-            System.out.println(t);
-        }
-
-        System.out.println("\nCatalogo general (Lista)");
-        if (lista.isEmpty()) {
-            System.out.println("(sin tickets)");
-        }
-        for (Ticket t : lista) {
-            System.out.println(t);
+            if (t.estado.equalsIgnoreCase("Pendiente")) {
+                System.out.println(t);}
         }
 
         System.out.println("═".repeat(40));
@@ -306,6 +325,7 @@ public class App {
                 return Integer.parseInt(linea);
             } catch (NumberFormatException e) {
                 System.out.println("Entrada invalida ingresa un numero.");
+                System.out.println("");
                 System.out.print(prompt);
             }
         }
@@ -317,7 +337,7 @@ public class App {
     }
 
     static void pausar(Scanner teclado) {
-        System.out.println("\nPresiona ENTER para continuar...");
+        System.out.println("\nPresiona enter para continuar.");
         teclado.nextLine();
     }
 }
